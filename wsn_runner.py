@@ -1,14 +1,11 @@
 #!/usr/bin/env python3
-"""WSN IDS reproduction runner with verbose print statements."""
 from __future__ import annotations
-
 import argparse
 import math
 from dataclasses import dataclass
 from pathlib import Path
 from time import perf_counter
 from typing import Dict, List, Optional, Sequence
-
 import numpy as np
 import pandas as pd
 from sklearn.base import BaseEstimator, clone
