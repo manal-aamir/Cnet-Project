@@ -11,3 +11,6 @@ __pycache__/
 .DS_Store
 .env
 outputs/
+images/
+PROJECT_REPORT.html
+PROJECT_REPORT.md
