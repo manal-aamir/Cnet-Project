@@ -4,8 +4,6 @@ A complete implementation of the methodology described in:
 
 **Altulaihan, E., Almaiah, M. A., & Aljughaiman, A. (2024).** *Anomaly Detection IDS for Detecting DoS Attacks in IoT Networks Based on Machine Learning Algorithms.* Sensors, 24(2), 713. https://doi.org/10.3390/s24020713
 
-**Repository**: https://github.com/manal-aamir/Cnet-Project.git
-
 ---
 
 ## Overview
@@ -47,8 +45,7 @@ Cnet-Project/
 ├── notebooks/
 │   └── results.ipynb                        # Visualizations & analysis
 ├── main.py                                  # Main pipeline script
-├── requirements.txt                         # Python dependencies
-├── REPORT.md                                # Comprehensive implementation report
+├── requirements.txt                         # Python dependencies                             # Comprehensive implementation report
 └── README.md                                # This file
 ```
 
@@ -60,7 +57,7 @@ Cnet-Project/
 
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/manal-aamir/Cnet-Project.git
 cd Cnet-Project
 
 # Create and activate virtual environment
@@ -124,15 +121,6 @@ python main.py
    - Generates confusion matrices
    - Saves all metrics to `outputs/metrics.csv`
 
-**Output**:
-```
-Saved cleaned IoTID20 to data/iotid20_filtered.csv with shape (99464, 78)
-[CFS feature selection running...]
-[GA feature selection running...]
-[Training 12 models...]
-Experiment complete. Results saved to outputs/.
-```
-
 ---
 
 ## Viewing Results
@@ -164,16 +152,6 @@ head -n 2 outputs/metrics.csv | tail -n 1
 # Check confusion matrix for Decision Tree + GA
 cat outputs/confmat_GA_DecisionTree.csv
 ```
-
-### Option 3: Read the Report
-
-For comprehensive analysis, see **`REPORT.md`** which includes:
-- Detailed methodology comparison with base paper
-- Complete results analysis
-- Feature selection insights
-- Deployment recommendations
-- Future work suggestions
-
 ---
 
 ## Results Summary
@@ -349,100 +327,11 @@ This implementation reproduces the methodology from:
 
 ---
 
-## Citation
-
-If you use this implementation, please cite the original paper:
-
-```bibtex
-@article{altulaihan2024anomaly,
-  title={Anomaly Detection IDS for Detecting DoS Attacks in IoT Networks Based on Machine Learning Algorithms},
-  author={Altulaihan, Esra and Almaiah, Mohammed Amin and Aljughaiman, Ahmed},
-  journal={Sensors},
-  volume={24},
-  number={2},
-  pages={713},
-  year={2024},
-  publisher={MDPI},
-  doi={10.3390/s24020713},
-  url={https://www.mdpi.com/1424-8220/24/2/713}
-}
-```
-
----
-
-## Troubleshooting
-
-### Common Issues
-
-**1. Dataset not found**
-```
-FileNotFoundError: data/IoT Network Intrusion Dataset.csv
-```
-**Solution**: Download IoTID20 dataset and place in `data/` directory with exact filename.
-
-**2. Memory error during GA**
-```
-MemoryError: Unable to allocate array
-```
-**Solution**: Reduce GA parameters in `src/feature_selection.py`:
-```python
-pop_size=10  # default: 20
-n_gen=25     # default: 50
-```
-
-**3. Slow training**
-```
-GA taking too long...
-```
-**Solution**: GA with full dataset (~100K samples) takes 3-5 minutes. This is normal. For testing, you can use a data sample:
-```python
-# In main.py after loading data
-X_sample, _, y_sample, _ = train_test_split(X, y, train_size=0.1, stratify=y, random_state=42)
-```
-
-**4. Jupyter kernel issues**
-```
-Kernel died unexpectedly
-```
-**Solution**: Install jupyter in the virtual environment:
-```bash
-pip install jupyter ipykernel
-python -m ipykernel install --user --name=cnet-venv
-```
-
----
-
-## Contributing
-
-This is a research implementation for educational purposes. For improvements or bug reports, please open an issue or submit a pull request.
-
----
-
-## License
-
-This project is provided for educational and research purposes. Please refer to the original paper for citation requirements.
-
----
-
 ## Acknowledgments
 
 - **Base Paper**: Altulaihan et al. (2024) - Sensors, 24(2), 713
 - **Dataset**: IoTID20 - IoT Network Intrusion Dataset
 - **Libraries**: scikit-learn, pandas, numpy, matplotlib, seaborn
-
----
-
-## Contact
-
-For questions about this implementation, please refer to the repository issues or the base paper documentation.
-
-**Last Updated**: November 11, 2025
-```
-
-**Detailed Classification Report**
-```bash
-cat outputs/WSN-DS_EnsembleSoft_report.txt
-```
 
 ---
 
@@ -466,97 +355,3 @@ cat outputs/WSN-DS_EnsembleSoft_report.txt
 *Note: Results may vary slightly based on dataset versions and hardware.*
 
 ---
-
-## Advanced Usage
-
-### Interactive Results Analysis
-
-For detailed analysis and visualization:
-
-```bash
-jupyter notebook results.ipynb
-```
-
-The notebook provides:
-- Performance comparison charts
-- Confusion matrix visualizations
-- Detailed classification reports
-- Ensemble method comparisons
-
-### Python API Usage
-
-You can also use the modules programmatically:
-
-```python
-from preprocessing import load_and_preprocess
-from training import build_models, train_models
-from evaluation import evaluate_models, save_results
-
-# Load data
-data = load_and_preprocess("WSN-DS.csv")
-
-# Build and train models
-models = build_models()
-trained = train_models(models, data.X_train, data.y_train)
-
-# Evaluate
-metrics_df, details = evaluate_models(
-    trained, data.X_test, data.y_test, data.class_names
-)
-
-# Save results
-save_results("WSN-DS", metrics_df, details)
-```
-
----
-
-## Model Configuration
-
-### Base Models
-
-**RandomForest**
-- `n_estimators=100`
-- `random_state=42`
-- `n_jobs=-1` (parallel processing)
-
-**SVC**
-- `kernel='rbf'`
-- `gamma='scale'`
-- `probability=True` (required for soft voting)
-- `random_state=42`
-
-**LogisticRegression**
-- `max_iter=1000`
-- `random_state=42`
-- `n_jobs=-1`
-
-### Ensemble Methods
-
-**Hard Voting**: Majority class prediction
-- Each model votes for a class
-- Most frequent class wins
-
-**Soft Voting**: Probability averaging
-- Each model outputs class probabilities
-- Probabilities are averaged
-- Class with highest average wins
-
----
-
-## Key Features
-
-- **Clean Architecture**: Modular design with separate preprocessing, training, and evaluation  
-- **Reproducible**: Fixed random seed (42) for consistent results  
-- **Multi-class Support**: Handles multiple attack types via LabelEncoder  
-- **Standardized Metrics**: Accuracy, weighted precision/recall/F1, confusion matrices  
-- **Auto Scaling**: StandardScaler for feature normalization  
-- **Comprehensive Reports**: Detailed classification reports per model  
-- **Visualizations**: Performance comparison bar charts  
-- **Error Handling**: Graceful failures with informative messages  
-
----
-
-## Troubleshooting
-
-**Problem:** `FileNotFoundError: Dataset not found`  
-**Last Updated**: November 11, 2025
