@@ -1,52 +1,275 @@
-# IoTID20 DoS Reproduction
+# WSN DoS Attack Detection using Ensemble Machine Learning
 
-This project re-implements the baseline pipeline from *“Anomaly Detection IDS for Detecting DoS Attacks in IoT Networks Based on Machine Learning Algorithms”* (Sensors 2024, Altulaihan et al.) so the experiments can be reproduced locally.
+A clean, modular implementation of Wireless Sensor Network DoS attack detection using ensemble machine learning (Hard vs. Soft Voting), based on the paper:
 
-## Repository Layout
+> **Al Sukkar & Al-Sharaeh (2024)**, *Enhancing Security in Wireless Sensor Networks: A Machine Learning-based DoS Attack Detection*, Sensors 2024, 24(2), 713. [https://www.mdpi.com/1424-8220/24/2/713](https://www.mdpi.com/1424-8220/24/2/713)
 
-- `src/cnetids/` – reusable library code (loading, preprocessing, feature selection, training, evaluation).
-- `scripts/run_experiments.py` – CLI driver that orchestrates the full experimental sweep.
-- `artifacts/` – default output location for logs, metrics tables, and serialized feature sets.
+---
 
-## Environment
+## Project Structure
 
 ```
-python -m venv .venv
-source .venv/bin/activate
+.
+├── preprocessing/
+│   ├── __init__.py
+│   └── data_loader.py          # Data loading, encoding, scaling
+├── training/
+│   ├── __init__.py
+│   └── models.py                # Model builders (RF, SVC, LR, Ensembles)
+├── evaluation/
+│   ├── __init__.py
+│   └── metrics.py               # Evaluation metrics & reporting
+│
+├── outputs/                     # Results directory (auto-created)
+│
+├── main.py                      # Main executable script
+├── results.ipynb                # Results analysis notebook
+├── requirements.txt             # Python dependencies
+├── WSN-DS.csv                   # Dataset 1 (place here)
+├── WSNBFSFdataset.csv          # Dataset 2 (place here)
+└── README.md                    # This file
+```
+
+---
+
+## Quick Start
+
+### 1. Setup Environment
+
+```bash
+# Clone or download the repository
+cd Cnet-Project
+
+# Create virtual environment (recommended)
+python3 -m venv .venv
+source .venv/bin/activate  # On macOS/Linux
+# .venv\Scripts\activate   # On Windows
+
+# Install dependencies (already done if you ran pip install earlier)
 pip install -r requirements.txt
 ```
 
-## Dataset Preparation
+### 2. Download Datasets
 
-Download IoTID20 from the [BoT-IoT/IoTID20 repository](https://www.kaggle.com/datasets) or the original authors’ URL, then:
+Download the following datasets and place them in the project root:
 
-1. Extract the CSVs locally.
-2. Merge the relevant DoS and normal traffic files if needed.
-3. Provide the merged CSV to the CLI via `--data-path`.
+- **WSN-DS.csv** - [Download from Kaggle](https://www.kaggle.com/datasets/WSN-DS)
+- **WSNBFSFdataset.csv** - [Download from Kaggle](https://www.kaggle.com/datasets/WSNBFSF)
 
-The script assumes a binary column named `label` that contains strings (`DoS` and `Normal`). You can override column names and label values via flags.
-
-## Running the Experiments
-
-```
-python scripts/run_experiments.py \
-  --data-path /path/to/IoTID20.csv \
-  --label-column label \
-  --positive-class DoS \
-  --drops flow_id src_ip dst_ip timestamp attack_subcategory attack_type
+```bash
+# Your project root should have:
+# WSN-DS.csv
+# WSNBFSFdataset.csv
 ```
 
-Outputs:
+---
 
-- `artifacts/metrics.csv` – Accuracy/Precision/Recall/F1 plus timing per model/feature-selection combo.
-- `artifacts/confusion_matrices.json` – Confusion matrices keyed by experiment id.
-- `artifacts/feature_sets.json` – Feature indices selected by GA and CFS.
+## Training Models
 
-Add `--max-ga-features` and `--max-cfs-features` to match the counts reported in the paper (13).
+### Train on Both Datasets (Recommended)
 
-## Extending
+```bash
+python main.py
+```
 
-- Adjust GA hyperparameters (`--ga-population`, `--ga-generations`, etc.) to trade accuracy for runtime.
-- Change the classifier registry inside `cnetids.models` to evaluate additional algorithms.
-- Integrate alternative datasets by supplying a different CSV and tweaking preprocessing options.
-# Cnet-Project
+This will:
+1. **Preprocess** both datasets (label encoding, feature scaling, 80/20 split)
+2. **Train** 5 models per dataset:
+   - RandomForest
+   - SVC (RBF kernel)
+   - LogisticRegression
+   - **EnsembleHard** (majority voting)
+   - **EnsembleSoft** (probability averaging)
+3. **Evaluate** each model (accuracy, precision, recall, F1)
+4. **Save** results to `outputs/`
+
+### Train on Single Dataset
+
+```bash
+# WSN-DS only
+python main.py --dataset WSN-DS
+
+# WSN-BFSF only
+python main.py --dataset WSN-BFSF
+```
+
+### Custom Output Directory
+
+```bash
+python main.py -o results/experiment1/
+```
+
+---
+
+## Evaluation & Results
+
+### Where to Find Results
+
+All outputs are saved to `outputs/` (or your custom directory):
+
+```
+outputs/
+├── WSN-DS_metrics.csv                    # Summary metrics table
+├── WSN-DS_performance.png                 # Performance bar chart
+├── WSN-DS_RandomForest_report.txt         # Detailed classification report
+├── WSN-DS_RandomForest_confusion_matrix.csv
+├── WSN-DS_SVC_report.txt
+├── WSN-DS_SVC_confusion_matrix.csv
+├── WSN-DS_LogisticRegression_report.txt
+├── WSN-DS_LogisticRegression_confusion_matrix.csv
+├── WSN-DS_EnsembleHard_report.txt
+├── WSN-DS_EnsembleHard_confusion_matrix.csv
+├── WSN-DS_EnsembleSoft_report.txt
+├── WSN-DS_EnsembleSoft_confusion_matrix.csv
+└── ... (same structure for WSN-BFSF)
+```
+
+### View Results
+
+**Summary Metrics (CSV)**
+```bash
+cat outputs/WSN-DS_metrics.csv
+```
+
+**Performance Plot**
+```bash
+open outputs/WSN-DS_performance.png  # macOS
+xdg-open outputs/WSN-DS_performance.png  # Linux
+```
+
+**Detailed Classification Report**
+```bash
+cat outputs/WSN-DS_EnsembleSoft_report.txt
+```
+
+---
+
+## Expected Results
+
+### WSN-DS Dataset
+| Model | Accuracy | Precision | Recall | F1 |
+|-------|----------|-----------|--------|-----|
+| **EnsembleSoft** | **~98.12%** | ~0.98 | ~0.98 | ~0.98 |
+| **EnsembleHard** | **~97.97%** | ~0.98 | ~0.98 | ~0.98 |
+| RandomForest | ~97.5% | ~0.97 | ~0.97 | ~0.97 |
+| SVC | ~96.8% | ~0.97 | ~0.97 | ~0.97 |
+| LogisticRegression | ~95.2% | ~0.95 | ~0.95 | ~0.95 |
+
+### WSN-BFSF Dataset
+| Model | Accuracy | Precision | Recall | F1 |
+|-------|----------|-----------|--------|-----|
+| **EnsembleSoft** | **~100%** | ~1.0 | ~1.0 | ~1.0 |
+| **EnsembleHard** | **~99.967%** | ~1.0 | ~1.0 | ~1.0 |
+
+*Note: Results may vary slightly based on dataset versions and hardware.*
+
+---
+
+## Advanced Usage
+
+### Interactive Results Analysis
+
+For detailed analysis and visualization:
+
+```bash
+jupyter notebook results.ipynb
+```
+
+The notebook provides:
+- Performance comparison charts
+- Confusion matrix visualizations
+- Detailed classification reports
+- Ensemble method comparisons
+
+### Python API Usage
+
+You can also use the modules programmatically:
+
+```python
+from preprocessing import load_and_preprocess
+from training import build_models, train_models
+from evaluation import evaluate_models, save_results
+
+# Load data
+data = load_and_preprocess("WSN-DS.csv")
+
+# Build and train models
+models = build_models()
+trained = train_models(models, data.X_train, data.y_train)
+
+# Evaluate
+metrics_df, details = evaluate_models(
+    trained, data.X_test, data.y_test, data.class_names
+)
+
+# Save results
+save_results("WSN-DS", metrics_df, details)
+```
+
+---
+
+## Model Configuration
+
+### Base Models
+
+**RandomForest**
+- `n_estimators=100`
+- `random_state=42`
+- `n_jobs=-1` (parallel processing)
+
+**SVC**
+- `kernel='rbf'`
+- `gamma='scale'`
+- `probability=True` (required for soft voting)
+- `random_state=42`
+
+**LogisticRegression**
+- `max_iter=1000`
+- `random_state=42`
+- `n_jobs=-1`
+
+### Ensemble Methods
+
+**Hard Voting**: Majority class prediction
+- Each model votes for a class
+- Most frequent class wins
+
+**Soft Voting**: Probability averaging
+- Each model outputs class probabilities
+- Probabilities are averaged
+- Class with highest average wins
+
+---
+
+## Key Features
+
+- **Clean Architecture**: Modular design with separate preprocessing, training, and evaluation  
+- **Reproducible**: Fixed random seed (42) for consistent results  
+- **Multi-class Support**: Handles multiple attack types via LabelEncoder  
+- **Standardized Metrics**: Accuracy, weighted precision/recall/F1, confusion matrices  
+- **Auto Scaling**: StandardScaler for feature normalization  
+- **Comprehensive Reports**: Detailed classification reports per model  
+- **Visualizations**: Performance comparison bar charts  
+- **Error Handling**: Graceful failures with informative messages  
+
+---
+
+## Troubleshooting
+
+**Problem:** `FileNotFoundError: Dataset not found`  
+**Solution:** Download datasets and place in project root. Check filenames match exactly: `WSN-DS.csv` and `WSNBFSFdataset.csv`
+
+**Problem:** `ModuleNotFoundError: No module named 'sklearn'`  
+**Solution:** Install dependencies: `pip install -r requirements.txt`
+
+**Problem:** Pipeline runs slowly  
+**Solution:** 
+- Reduce `n_estimators` in RandomForest (edit `training/models.py`)
+- Use smaller test_size in `preprocessing/data_loader.py`
+
+**Problem:** Memory error  
+**Solution:**
+- Process datasets one at a time: `python main.py --dataset WSN-DS`
+- Sample the data before training (modify `preprocessing/data_loader.py`)
+
+---

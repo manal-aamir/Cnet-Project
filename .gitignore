@@ -1,0 +1,13 @@
+Screen*
+WSN-DS.csv
+WSNBFSFdataset.csv
+venv
+pyc
+__pycache__/
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+.DS_Store
+.env
+outputs/
