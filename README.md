@@ -1,24 +1,45 @@
-# WSN DoS Attack Detection using Ensemble Machine Learning
+# IoTID20 DoS Detection (per Sensors 2024 base paper)# WSN DoS Attack Detection using Ensemble Machine Learning
 
-A clean, modular implementation of Wireless Sensor Network DoS attack detection using ensemble machine learning (Hard vs. Soft Voting), based on the paper:
 
-> **Al Sukkar & Al-Sharaeh (2024)**, *Enhancing Security in Wireless Sensor Networks: A Machine Learning-based DoS Attack Detection*, Sensors 2024, 24(2), 713. [https://www.mdpi.com/1424-8220/24/2/713](https://www.mdpi.com/1424-8220/24/2/713)
 
----
+This repository implements the exact pipeline described in:A clean, modular implementation of Wireless Sensor Network DoS attack detection using ensemble machine learning (Hard vs. Soft Voting), based on the paper:
 
-## Project Structure
 
-```
-.
+
+Altulaihan, E., Almaiah, M. A., & Aljughaiman, A. (2024). Anomaly Detection IDS for Detecting DoS Attacks in IoT Networks Based on Machine Learning Algorithms. Sensors, 24(2), 713. https://doi.org/10.3390/s24020713> **Al Sukkar & Al-Sharaeh (2024)**, *Enhancing Security in Wireless Sensor Networks: A Machine Learning-based DoS Attack Detection*, Sensors 2024, 24(2), 713. [https://www.mdpi.com/1424-8220/24/2/713](https://www.mdpi.com/1424-8220/24/2/713)
+
+
+
+- Input: IoTID20 Dataset---
+
+- Step 1: Data Preprocessing (normalize, handle missing, clean noise)
+
+- Step 2: Feature Selection (CFS and GA)## Project Structure
+
+- Step 3: Train Classifiers (DT, RF, KNN, SVM)
+
+- Step 4: Evaluate (accuracy, train/test time, compare CFS vs GA)```
+
+- Output: Best classifier + feature selection combo (DT + GA).
+
 ├── preprocessing/
-│   ├── __init__.py
-│   └── data_loader.py          # Data loading, encoding, scaling
-├── training/
-│   ├── __init__.py
-│   └── models.py                # Model builders (RF, SVC, LR, Ensembles)
+
+## Structure│   ├── __init__.py
+
+- src/: All code modules│   └── data_loader.py          # Data loading, encoding, scaling
+
+- data/: Place IoTID20 CSVs here├── training/
+
+- outputs/: All experiment results│   ├── __init__.py
+
+- notebooks/: results.ipynb for visualizations│   └── models.py                # Model builders (RF, SVC, LR, Ensembles)
+
 ├── evaluation/
-│   ├── __init__.py
-│   └── metrics.py               # Evaluation metrics & reporting
+
+## Usage│   ├── __init__.py
+
+(Instructions will be added after implementation)│   └── metrics.py               # Evaluation metrics & reporting
+
 │
 ├── outputs/                     # Results directory (auto-created)
 │
