@@ -41,6 +41,14 @@ except ImportError:
     ART_AVAILABLE = False
     print("[WARNING] Adversarial Robustness Toolbox (ART) not available. Install with: pip install adversarial-robustness-toolbox")
 
+# Try to import kagglehub for dataset download
+try:
+    import kagglehub
+    KAGGLEHUB_AVAILABLE = True
+except ImportError:
+    KAGGLEHUB_AVAILABLE = False
+    print("[WARNING] kagglehub not available. Install with: pip install kagglehub")
+
 
 @dataclass
 class ExplainabilityResults:
@@ -972,6 +980,58 @@ class AdversarialTrainer:
         return results
 
 
+def download_kaggle_dataset(dataset_name: str, output_dir: str = "data") -> Optional[str]:
+    """
+    Download a dataset from Kaggle using kagglehub
+    
+    Args:
+        dataset_name: Kaggle dataset name (e.g., "celilokur/wsnbfsfdataset")
+        output_dir: Directory to save the dataset
+    
+    Returns:
+        Path to the downloaded dataset CSV file, or None if download failed
+    """
+    if not KAGGLEHUB_AVAILABLE:
+        print(f"[WARNING] kagglehub not available. Cannot download {dataset_name}")
+        print("         Install with: pip install kagglehub")
+        return None
+    
+    try:
+        print(f"\n[DOWNLOAD] Downloading dataset: {dataset_name}...")
+        path = kagglehub.dataset_download(dataset_name)
+        print(f"[DOWNLOAD] Dataset downloaded to: {path}")
+        
+        # Find CSV files in the downloaded directory
+        path_obj = Path(path)
+        csv_files = list(path_obj.glob("*.csv"))
+        
+        if csv_files:
+            # Return the first CSV file found
+            csv_path = csv_files[0]
+            print(f"[DOWNLOAD] Found CSV file: {csv_path}")
+            
+            # Optionally copy to output_dir
+            output_path = Path(output_dir)
+            output_path.mkdir(parents=True, exist_ok=True)
+            target_path = output_path / csv_path.name
+            
+            if not target_path.exists():
+                import shutil
+                shutil.copy2(csv_path, target_path)
+                print(f"[DOWNLOAD] Copied to: {target_path}")
+                return str(target_path)
+            else:
+                print(f"[DOWNLOAD] File already exists at: {target_path}")
+                return str(target_path)
+        else:
+            print(f"[WARNING] No CSV files found in {path}")
+            return None
+            
+    except Exception as e:
+        print(f"[ERROR] Failed to download dataset {dataset_name}: {e}")
+        return None
+
+
 class CrossDatasetValidator:
     """Validate models across different datasets"""
     
@@ -1520,24 +1580,49 @@ def run_advanced_analysis_on_saved_models(data_dir: str = "data",
     # ========================================================================
     # Test pre-trained models on different datasets to evaluate generalization
     # ========================================================================
+    print(f"\n{'='*70}")
+    print("3. CROSS-DATASET VALIDATION")
+    print(f"{'='*70}")
+    
+    # Download Kaggle dataset for cross-validation
+    kaggle_dataset_path = None
+    if KAGGLEHUB_AVAILABLE:
+        print("\n[DOWNLOAD] Downloading WSNBFSF dataset from Kaggle for cross-validation...")
+        kaggle_dataset_path = download_kaggle_dataset("celilokur/wsnbfsfdataset", data_dir)
+        if kaggle_dataset_path:
+            print(f"[DOWNLOAD] ✓ Successfully downloaded dataset: {kaggle_dataset_path}")
+        else:
+            print(f"[DOWNLOAD] ⚠ Failed to download Kaggle dataset, will use local datasets if available")
+    
     data_path = Path(data_dir)
     data_files = list(data_path.glob("*.csv"))
+    
+    # Add Kaggle dataset to target files if downloaded
+    target_files = []
+    if kaggle_dataset_path and Path(kaggle_dataset_path).exists():
+        target_files.append(Path(kaggle_dataset_path))
+        print(f"[CROSS-DATASET] Added Kaggle dataset to validation targets: {kaggle_dataset_path}")
+    
+    # Add other local CSV files as targets
+    source_file = None
     if len(data_files) > 1:
-        print(f"\n{'='*70}")
-        print("3. CROSS-DATASET VALIDATION")
-        print(f"{'='*70}")
-        print("Testing pre-trained models on different datasets...")
-        
         # Use first file as source, others as targets
         source_file = data_files[0]
-        target_files = data_files[1:]
+        target_files.extend(data_files[1:])
+    elif len(data_files) == 1:
+        source_file = data_files[0]
+    
+    if target_files:
+        print(f"[CROSS-DATASET] Testing pre-trained models on {len(target_files)} target dataset(s)...")
+        
+        # Use first local file as source if available, otherwise use the main dataset
+        if source_file is None:
+            source_file = data_files[0] if data_files else Path(data_file) if data_file else None
         
         for target_file in target_files:
             print(f"\n[CROSS-DATASET] Testing models on {target_file.name}...")
             try:
-                # Load target dataset
-                X_target, y_target = load_data_from_data_folder(data_dir, target_file.name)
-                
+                # Load target dataset using the validator's method
                 validator = CrossDatasetValidator(f"{output_dir}/cross_dataset")
                 
                 # Test each pre-trained model on the target dataset
@@ -1562,10 +1647,11 @@ def run_advanced_analysis_on_saved_models(data_dir: str = "data",
                         selected_features = list(X.columns)
                     
                     try:
+                        source_name = source_file.stem if source_file else "iotid20"
                         cross_results = validator.validate(
                             model=model,  # Using pre-trained model
                             source_features=selected_features,
-                            source_dataset_name=source_file.stem,
+                            source_dataset_name=source_name,
                             target_data_path=str(target_file),
                             target_dataset_name=target_file.stem,
                             label_column="auto",
