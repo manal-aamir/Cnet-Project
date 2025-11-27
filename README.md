@@ -96,6 +96,20 @@ source venv/bin/activate
 python main.py
 ```
 
+### Single-File Runner (UNSW IoT Botnet)
+
+If you prefer a self-contained script that embeds all logic and uses the repository's copy of `UNSW_2018_IoT_Botnet_Merged_10.csv`, run:
+
+```
+python paper_baseline.py --output-dir artifacts_unsw
+```
+
+Flags like `--disable-ga`, `--disable-cfs`, `--positive-label`, `--test-size`, and GA hyperparameters are also available. Metrics/confusion matrices/feature sets are written under the chosen output directory, and the console prints the same comparison table.
+
+```bash
+# Activate virtual environment
+source venv/bin/activate
+
 **Expected Runtime**: 5-10 minutes
 
 **Pipeline Steps**:

@@ -1,0 +1,399 @@
+manal@Manaal-Aamir ~ python advanced_analysis.py
+[WARNING] SHAP not available. Install with: pip install shap
+[WARNING] Adversarial Robustness Toolbox (ART) not available. Install with: pip install adversarial-robustness-toolbox
+======================================================================
+Advanced Analysis Module for IoT DoS Detection
+======================================================================
+
+This module provides:
+  1. Explainability: SHAP, feature importance, permutation importance
+  2. Adversarial Robustness: FGSM, PGD attacks
+  3. Cross-Dataset Validation: Test models on different datasets
+
+======================================================================
+Using PRE-TRAINED models from outputs/ folder
+(Models are NOT retrained - they must exist from main.py)
+======================================================================
+======================================================================
+ADVANCED ANALYSIS ON SAVED MODELS
+======================================================================
+NOTE: Using pre-trained models from outputs/ - NO RETRAINING
+======================================================================
+
+[1/4] Loading pre-trained models from outputs/...
+[LOADING] Found 12 model files in outputs
+[LOADING] Loaded: GA_RandomForest
+[LOADING] Loaded: GA_KNN
+[LOADING] Loaded: All_KNN
+[LOADING] Loaded: All_SVM
+[LOADING] Loaded: GA_SVM
+[LOADING] Loaded: GA_DecisionTree
+[LOADING] Loaded: CFS_SVM
+[LOADING] Loaded: CFS_RandomForest
+[LOADING] Loaded: All_DecisionTree
+[LOADING] Loaded: All_RandomForest
+[LOADING] Loaded: CFS_KNN
+[LOADING] Loaded: CFS_DecisionTree
+
+[2/4] Loading feature sets from outputs/...
+[LOADING] Loaded CFS features: 14 features
+[LOADING] Loaded GA features: 14 features
+
+[3/4] Loading existing evaluation results from metrics.csv...
+[LOADING] Loaded metrics for 12 model configurations
+
+[4/4] Loading data for analysis...
+[LOADING] Loading data from data/iotid20_filtered.csv...
+[LOADING] Dataset shape: 99,464 rows × 78 columns
+[LOADING] Using label column: Target
+[LOADING] Features: 77, Samples: 99464
+[LOADING] Class distribution: Normal=40073, DoS=59391
+
+[DATA] Train: 66,640 samples, Test: 32,824 samples
+[MODELS] Loaded 12 pre-trained models
+
+======================================================================
+Processing: GA_RandomForest
+======================================================================
+[FEATURES] Using 13 features from 'GA' set
+[BASELINE] Accuracy: 0.9996, Precision: 0.9998, Recall: 0.9995, F1: 0.9997
+
+============================================================
+ADVANCED ANALYSIS: GA_RandomForest
+============================================================
+
+[1/2] Running Explainability Analysis...
+
+[EXPLAINABILITY] Analyzing GA_RandomForest...
+[EXPLAINABILITY] Computing permutation importance (n_repeats=10)...
+
+[2/2] Running Adversarial Robustness Testing...
+
+[ADVERSARIAL] Testing robustness of GA_RandomForest...
+[ADVERSARIAL] Baseline accuracy: 0.9996
+[ADVERSARIAL] Testing custom FGSM-like attack...
+[ADVERSARIAL] Testing random noise attack...
+[ADVERSARIAL] Results saved to outputs/adversarial/adversarial_summary_GA_RandomForest.csv
+
+======================================================================
+Processing: GA_KNN
+======================================================================
+[FEATURES] Using 13 features from 'GA' set
+[BASELINE] Accuracy: 0.9991, Precision: 0.9992, Recall: 0.9992, F1: 0.9992
+
+============================================================
+ADVANCED ANALYSIS: GA_KNN
+============================================================
+
+[1/2] Running Explainability Analysis...
+
+[EXPLAINABILITY] Analyzing GA_KNN...
+[EXPLAINABILITY] Computing permutation importance (n_repeats=10)...
+
+[2/2] Running Adversarial Robustness Testing...
+
+[ADVERSARIAL] Testing robustness of GA_KNN...
+[ADVERSARIAL] Baseline accuracy: 0.9991
+[ADVERSARIAL] Testing custom FGSM-like attack...
+[ADVERSARIAL] Testing random noise attack...
+[ADVERSARIAL] Results saved to outputs/adversarial/adversarial_summary_GA_KNN.csv
+
+======================================================================
+Processing: All_KNN
+======================================================================
+[FEATURES] Using 77 features from 'All' set
+[BASELINE] Accuracy: 0.9971, Precision: 0.9990, Recall: 0.9962, F1: 0.9976
+
+============================================================
+ADVANCED ANALYSIS: All_KNN
+============================================================
+
+[1/2] Running Explainability Analysis...
+
+[EXPLAINABILITY] Analyzing All_KNN...
+[EXPLAINABILITY] Computing permutation importance (n_repeats=10)...
+
+[2/2] Running Adversarial Robustness Testing...
+
+[ADVERSARIAL] Testing robustness of All_KNN...
+[ADVERSARIAL] Baseline accuracy: 0.9971
+[ADVERSARIAL] Testing custom FGSM-like attack...
+[ADVERSARIAL] Testing random noise attack...
+[ADVERSARIAL] Results saved to outputs/adversarial/adversarial_summary_All_KNN.csv
+
+======================================================================
+Processing: All_SVM
+======================================================================
+[FEATURES] Using 77 features from 'All' set
+[BASELINE] Accuracy: 0.8828, Precision: 0.8371, Recall: 0.9979, F1: 0.9105
+
+============================================================
+ADVANCED ANALYSIS: All_SVM
+============================================================
+
+[1/2] Running Explainability Analysis...
+
+[EXPLAINABILITY] Analyzing All_SVM...
+[EXPLAINABILITY] Computing permutation importance (n_repeats=10)...
+
+[2/2] Running Adversarial Robustness Testing...
+
+[ADVERSARIAL] Testing robustness of All_SVM...
+[ADVERSARIAL] Baseline accuracy: 0.8828
+[ADVERSARIAL] Testing custom FGSM-like attack...
+[WARNING] Custom FGSM attack failed: This 'SVC' has no attribute 'predict_proba'
+[ADVERSARIAL] Testing random noise attack...
+[ADVERSARIAL] Results saved to outputs/adversarial/adversarial_summary_All_SVM.csv
+
+======================================================================
+Processing: GA_SVM
+======================================================================
+[FEATURES] Using 13 features from 'GA' set
+[BASELINE] Accuracy: 0.9708, Precision: 1.0000, Recall: 0.9511, F1: 0.9749
+
+============================================================
+ADVANCED ANALYSIS: GA_SVM
+============================================================
+
+[1/2] Running Explainability Analysis...
+
+[EXPLAINABILITY] Analyzing GA_SVM...
+[EXPLAINABILITY] Computing permutation importance (n_repeats=10)...
+
+[2/2] Running Adversarial Robustness Testing...
+
+[ADVERSARIAL] Testing robustness of GA_SVM...
+[ADVERSARIAL] Baseline accuracy: 0.9708
+[ADVERSARIAL] Testing custom FGSM-like attack...
+[WARNING] Custom FGSM attack failed: This 'SVC' has no attribute 'predict_proba'
+[ADVERSARIAL] Testing random noise attack...
+[ADVERSARIAL] Results saved to outputs/adversarial/adversarial_summary_GA_SVM.csv
+
+======================================================================
+Processing: GA_DecisionTree
+======================================================================
+[FEATURES] Using 13 features from 'GA' set
+[BASELINE] Accuracy: 0.9996, Precision: 0.9998, Recall: 0.9995, F1: 0.9997
+
+============================================================
+ADVANCED ANALYSIS: GA_DecisionTree
+============================================================
+
+[1/2] Running Explainability Analysis...
+
+[EXPLAINABILITY] Analyzing GA_DecisionTree...
+[EXPLAINABILITY] Computing permutation importance (n_repeats=10)...
+
+[2/2] Running Adversarial Robustness Testing...
+
+[ADVERSARIAL] Testing robustness of GA_DecisionTree...
+[ADVERSARIAL] Baseline accuracy: 0.9996
+[ADVERSARIAL] Testing custom FGSM-like attack...
+[ADVERSARIAL] Testing random noise attack...
+[ADVERSARIAL] Results saved to outputs/adversarial/adversarial_summary_GA_DecisionTree.csv
+
+======================================================================
+Processing: CFS_SVM
+======================================================================
+[FEATURES] Using 13 features from 'CFS' set
+[BASELINE] Accuracy: 0.9913, Precision: 0.9973, Recall: 0.9881, F1: 0.9926
+
+============================================================
+ADVANCED ANALYSIS: CFS_SVM
+============================================================
+
+[1/2] Running Explainability Analysis...
+
+[EXPLAINABILITY] Analyzing CFS_SVM...
+[EXPLAINABILITY] Computing permutation importance (n_repeats=10)...
+
+[2/2] Running Adversarial Robustness Testing...
+
+[ADVERSARIAL] Testing robustness of CFS_SVM...
+[ADVERSARIAL] Baseline accuracy: 0.9913
+[ADVERSARIAL] Testing custom FGSM-like attack...
+[WARNING] Custom FGSM attack failed: This 'SVC' has no attribute 'predict_proba'
+[ADVERSARIAL] Testing random noise attack...
+[ADVERSARIAL] Results saved to outputs/adversarial/adversarial_summary_CFS_SVM.csv
+
+======================================================================
+Processing: CFS_RandomForest
+======================================================================
+[FEATURES] Using 13 features from 'CFS' set
+[BASELINE] Accuracy: 0.9988, Precision: 0.9994, Recall: 0.9986, F1: 0.9990
+
+============================================================
+ADVANCED ANALYSIS: CFS_RandomForest
+============================================================
+
+[1/2] Running Explainability Analysis...
+
+[EXPLAINABILITY] Analyzing CFS_RandomForest...
+[EXPLAINABILITY] Computing permutation importance (n_repeats=10)...
+
+[2/2] Running Adversarial Robustness Testing...
+
+[ADVERSARIAL] Testing robustness of CFS_RandomForest...
+[ADVERSARIAL] Baseline accuracy: 0.9988
+[ADVERSARIAL] Testing custom FGSM-like attack...
+[ADVERSARIAL] Testing random noise attack...
+[ADVERSARIAL] Results saved to outputs/adversarial/adversarial_summary_CFS_RandomForest.csv
+
+======================================================================
+Processing: All_DecisionTree
+======================================================================
+[FEATURES] Using 77 features from 'All' set
+[BASELINE] Accuracy: 0.9994, Precision: 0.9995, Recall: 0.9995, F1: 0.9995
+
+============================================================
+ADVANCED ANALYSIS: All_DecisionTree
+============================================================
+
+[1/2] Running Explainability Analysis...
+
+[EXPLAINABILITY] Analyzing All_DecisionTree...
+[EXPLAINABILITY] Computing permutation importance (n_repeats=10)...
+
+[2/2] Running Adversarial Robustness Testing...
+
+[ADVERSARIAL] Testing robustness of All_DecisionTree...
+[ADVERSARIAL] Baseline accuracy: 0.9994
+[ADVERSARIAL] Testing custom FGSM-like attack...
+[ADVERSARIAL] Testing random noise attack...
+[ADVERSARIAL] Results saved to outputs/adversarial/adversarial_summary_All_DecisionTree.csv
+
+======================================================================
+Processing: All_RandomForest
+======================================================================
+[FEATURES] Using 77 features from 'All' set
+[BASELINE] Accuracy: 0.9995, Precision: 0.9996, Recall: 0.9994, F1: 0.9995
+
+============================================================
+ADVANCED ANALYSIS: All_RandomForest
+============================================================
+
+[1/2] Running Explainability Analysis...
+
+[EXPLAINABILITY] Analyzing All_RandomForest...
+[EXPLAINABILITY] Computing permutation importance (n_repeats=10)...
+
+[2/2] Running Adversarial Robustness Testing...
+
+[ADVERSARIAL] Testing robustness of All_RandomForest...
+[ADVERSARIAL] Baseline accuracy: 0.9995
+[ADVERSARIAL] Testing custom FGSM-like attack...
+^C[ADVERSARIAL] Testing random noise attack...
+[ADVERSARIAL] Results saved to outputs/adversarial/adversarial_summary_All_RandomForest.csv
+
+======================================================================
+Processing: CFS_KNN
+======================================================================
+[FEATURES] Using 13 features from 'CFS' set
+[BASELINE] Accuracy: 0.9960, Precision: 0.9992, Recall: 0.9941, F1: 0.9966
+
+============================================================
+ADVANCED ANALYSIS: CFS_KNN
+============================================================
+
+[1/2] Running Explainability Analysis...
+
+[EXPLAINABILITY] Analyzing CFS_KNN...
+[EXPLAINABILITY] Computing permutation importance (n_repeats=10)...
+
+[2/2] Running Adversarial Robustness Testing...
+
+[ADVERSARIAL] Testing robustness of CFS_KNN...
+[ADVERSARIAL] Baseline accuracy: 0.9960
+[ADVERSARIAL] Testing custom FGSM-like attack...
+[ADVERSARIAL] Testing random noise attack...
+[ADVERSARIAL] Results saved to outputs/adversarial/adversarial_summary_CFS_KNN.csv
+
+======================================================================
+Processing: CFS_DecisionTree
+======================================================================
+[FEATURES] Using 13 features from 'CFS' set
+[BASELINE] Accuracy: 0.9985, Precision: 0.9990, Recall: 0.9986, F1: 0.9988
+
+============================================================
+ADVANCED ANALYSIS: CFS_DecisionTree
+============================================================
+
+[1/2] Running Explainability Analysis...
+
+[EXPLAINABILITY] Analyzing CFS_DecisionTree...
+[EXPLAINABILITY] Computing permutation importance (n_repeats=10)...
+
+[2/2] Running Adversarial Robustness Testing...
+
+[ADVERSARIAL] Testing robustness of CFS_DecisionTree...
+[ADVERSARIAL] Baseline accuracy: 0.9985
+[ADVERSARIAL] Testing custom FGSM-like attack...
+[ADVERSARIAL] Testing random noise attack...
+[ADVERSARIAL] Results saved to outputs/adversarial/adversarial_summary_CFS_DecisionTree.csv
+
+======================================================================
+3. CROSS-DATASET VALIDATION
+======================================================================
+Testing pre-trained models on different datasets...
+
+[CROSS-DATASET] Testing models on iotid20_filtered.csv...
+[LOADING] Loading data from data/iotid20_filtered.csv...
+[LOADING] Dataset shape: 99,464 rows × 78 columns
+[LOADING] Using label column: Target
+[LOADING] Features: 77, Samples: 99464
+[LOADING] Class distribution: Normal=40073, DoS=59391
+
+[CROSS-DATASET] Validating IoT Network Intrusion Dataset -> iotid20_filtered...
+[WARNING] Cross-dataset validation failed for GA_RandomForest: Failed to detect label column. Please specify manually.
+
+[CROSS-DATASET] Validating IoT Network Intrusion Dataset -> iotid20_filtered...
+[WARNING] Cross-dataset validation failed for GA_KNN: Failed to detect label column. Please specify manually.
+
+[CROSS-DATASET] Validating IoT Network Intrusion Dataset -> iotid20_filtered...
+[WARNING] Cross-dataset validation failed for All_KNN: Failed to detect label column. Please specify manually.
+
+[CROSS-DATASET] Validating IoT Network Intrusion Dataset -> iotid20_filtered...
+[WARNING] Cross-dataset validation failed for All_SVM: Failed to detect label column. Please specify manually.
+
+[CROSS-DATASET] Validating IoT Network Intrusion Dataset -> iotid20_filtered...
+[WARNING] Cross-dataset validation failed for GA_SVM: Failed to detect label column. Please specify manually.
+
+[CROSS-DATASET] Validating IoT Network Intrusion Dataset -> iotid20_filtered...
+[WARNING] Cross-dataset validation failed for GA_DecisionTree: Failed to detect label column. Please specify manually.
+
+[CROSS-DATASET] Validating IoT Network Intrusion Dataset -> iotid20_filtered...
+[WARNING] Cross-dataset validation failed for CFS_SVM: Failed to detect label column. Please specify manually.
+
+[CROSS-DATASET] Validating IoT Network Intrusion Dataset -> iotid20_filtered...
+[WARNING] Cross-dataset validation failed for CFS_RandomForest: Failed to detect label column. Please specify manually.
+
+[CROSS-DATASET] Validating IoT Network Intrusion Dataset -> iotid20_filtered...
+[WARNING] Cross-dataset validation failed for All_DecisionTree: Failed to detect label column. Please specify manually.
+
+[CROSS-DATASET] Validating IoT Network Intrusion Dataset -> iotid20_filtered...
+[WARNING] Cross-dataset validation failed for All_RandomForest: Failed to detect label column. Please specify manually.
+
+[CROSS-DATASET] Validating IoT Network Intrusion Dataset -> iotid20_filtered...
+[WARNING] Cross-dataset validation failed for CFS_KNN: Failed to detect label column. Please specify manually.
+
+[CROSS-DATASET] Validating IoT Network Intrusion Dataset -> iotid20_filtered...
+[WARNING] Cross-dataset validation failed for CFS_DecisionTree: Failed to detect label column. Please specify manually.
+
+======================================================================
+ANALYSIS COMPLETE
+======================================================================
+
+Results saved to: outputs/
+  - Explainability: outputs/explainability/
+  - Adversarial: outputs/adversarial/
+  - Cross-dataset: outputs/cross_dataset/
+
+======================================================================
+✓ ANALYSIS COMPLETE!
+======================================================================
+
+Results saved to outputs/
+  - Explainability: outputs/explainability/
+  - Adversarial: outputs/adversarial/
+  - Cross-dataset: outputs/cross_dataset/
+manal@Manaal-Aamir ~ 
