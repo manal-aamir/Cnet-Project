@@ -24,33 +24,6 @@ This project implements an Intrusion Detection System (IDS) for detecting Denial
 
 ---
 
-## Project Structure
-
-```
-Cnet-Project/
-├── data/
-│   ├── IoT Network Intrusion Dataset.csv    # Raw IoTID20 dataset (place here)
-│   └── iotid20_filtered.csv                 # Preprocessed dataset (auto-generated)
-├── src/
-│   ├── preprocessing.py                     # Data loading & cleaning
-│   ├── feature_selection.py                 # CFS & GA implementations
-│   ├── models.py                            # Classifier factory (DT, RF, KNN, SVM)
-│   └── evaluate.py                          # Training & evaluation harness
-├── outputs/
-│   ├── metrics.csv                          # Performance metrics (all experiments)
-│   ├── cfs_features.csv                     # CFS selected features
-│   ├── ga_features.csv                      # GA selected features
-│   ├── confmat_*.csv                        # Confusion matrices (12 files)
-│   └── model_*.pkl                          # Trained models (12 files)
-├── notebooks/
-│   └── results.ipynb                        # Visualizations & analysis
-├── main.py                                  # Main pipeline script
-├── requirements.txt                         # Python dependencies                             # Comprehensive implementation report
-└── README.md                                # This file
-```
-
----
-
 ## Quick Start
 
 ### 1. Setup Environment
